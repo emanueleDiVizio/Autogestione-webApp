@@ -1,174 +1,83 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {observable} from 'mobx';
+import {action} from 'mobx';
+import {observer} from 'mobx-react';
 
 var ReactDOM = require('react-dom');
 var ons = require('onsenui');
 var Ons = require('react-onsenui');
 
-var StudentList = React.createClass({
-  propTypes: {
-    onItemClick:   React.PropTypes.func
-  },
-  
-  changeHandler: function(e) {
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(e.target.value);
+var appState = observable({
+    timer: 0
+})
+
+appState.resetTimer = action(function reset() {
+    appState.timer = 0;
+});
+
+setInterval(action(function tick() {
+    appState.timer += 1;
+}), 1000);
+
+const TimerView = observer(class TimerView extends React.Component {
+    render() {
+        return (<button onClick={this.onReset.bind(this)}>
+                Seconds passed: {this.props.appState.timer}
+            </button>);
     }
-  },
-  
-  renderToolbar: function(name) {
+
+    onReset () {
+        this.props.appState.resetTimer();
+    }
+}
+);
+
+
+
+var App = React.createClass({
+  renderToolbar: function() {
     return (
       <Ons.Toolbar>
-        <div className='center'>{name}</div>
+        <div className='center'>List</div>
       </Ons.Toolbar>
     );
   },
 
   renderRow: function(row, index) {
+    const x = 40 + Math.round(5 * (Math.random() - 0.5)),
+          y = 40 + Math.round(5 * (Math.random() - 0.5));
+
+    const names = ['Max', 'Chloe', 'Bella', 'Oliver', 'Tiger', 'Lucy', 'Shadow', 'Angel'];
+    const name = names[Math.floor(names.length * Math.random())];
+
     return (
-      <Ons.ListItem key={index} onClick={this.changeHandler}>
+      <Ons.ListItem key={index}>
         <div className='left'>
-          V A
+          <img src={`http://placekitten.com/g/${x}/${y}`} className='list__item__thumbnail' />
         </div>
         <div className='center'>
-          Corso di culo
-        </div>
-        <div className='right'>
-          13:30 - 16:00
+        <TimerView appState={appState}/>
 
         </div>
       </Ons.ListItem>
     );
   },
 
-  render: function(name) {
+  render: function() {
     return (
       <Ons.Page renderToolbar={this.renderToolbar}>
         <Ons.List
-          dataSource={[1, 2]}
+          dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
           renderRow={this.renderRow}
-          />
+          renderHeader={() => <Ons.ListHeader>Cute cats</Ons.ListHeader>}
+        />
       </Ons.Page>
     );
   }
 });
 
-
-var Parent = React.createClass({
-
-  getInitialState: function() {
-    return {
-      value: 'foo'
-    }
-  },
-
-  changeHandler: function(value) {
-    this.setState({
-      value: value
-    });
-  },
-
-  render: function() {
-    return (
-      <div>
-        <Child value={this.state.value} onChange={this.changeHandler} />
-        <span>{this.state.value}</span>
-      </div>
-    );
-  }
-});
-
-var Child = React.createClass({
-  propTypes: {
-    value:      React.PropTypes.string,
-    onChange:   React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      value: ''
-    };
-  },
-  changeHandler: function(e) {
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(e.target.value);
-    }
-  },
-  render: function() {
-    return (
-      <input type="text" value={this.props.value} onChange={this.changeHandler} />
-    );
-  }
-});
-
-
-
-
-var App = React.createClass({
-  
-  onUserClick: function(index){
-    
-  },
-  
-  renderToolbar: function(route, navigator) {
-    const backButton = route.hasBackButton
-    ? <Ons.BackButton onClick={this.handleClick.bind(this, navigator)}>Back</Ons.BackButton>
-          : null;
-
-    return (
-      <Ons.Toolbar>
-        <div className='left'>{backButton}</div>
-        <div className='center'>{route.title}</div>
-      </Ons.Toolbar>
-    );
-  },
-
-  handleClick: function(navigator) {
-    ons.notification.confirm('Do you really want to go back?')
-      .then((response) => {
-      if (response === 1) {
-        navigator.popPage();
-      }
-    });
-  },
-
-  pushPage: function(navigator) {
-    navigator.pushPage({
-      title: `Another page`,
-      hasBackButton: true
-    });
-  },
-
-  renderPage: function(route, navigator) {
-    if(route.type == 'course'){
-      return(
-        <StudentList key={route.title} onItemClick={this.onUserInput} name={"Stuede"}></StudentList>
-      )
-    }
-    else{
-      return (
-        <Ons.Page key={route.title} renderToolbar={this.renderToolbar.bind(this, route, navigator)}>
-          <section style={{margin: '16px', textAlign: 'center'}}>
-            <Ons.Button onClick={this.pushPage.bind(this, navigator)}>
-              Push Page
-            </Ons.Button>
-          </section>
-        </Ons.Page>
-      );
-    }
-  },
-
-  render: function() {
-    return (
-      <Ons.Navigator
-        renderPage={this.renderPage}
-        initialRoute={{
-          type: 'course'
-        }}
-        />
-    );
-  }
-});
 
 
 export default App;
