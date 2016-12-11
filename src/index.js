@@ -9,8 +9,10 @@ var ons = require('onsenui');
 var Ons = require('react-onsenui');
 
 
-import CoursesList from './components/CoursesList';
-import CourseDetail from './components/CourseDetail';
+import CourseDetailPage from './components/CourseDetailPage';
+import CoursesPage from './components/CoursesPage';
+
+
 
 import {extendObservable, action, autorun} from 'mobx';
 
@@ -47,18 +49,13 @@ class AppState {
         this.pages.pop();
       }),
 
-      pageToDisplay: function(navigator)  {
+      pageToDisplay: function(route, navigator)  {
         if(this.lastPage.name === 'main'){
           var manager = new ListManager(this, navigator);
-          return(<CoursesList source={manager}/>)
+          return(<CoursesPage key={route.title} route={route} navigator={navigator} manager={manager}/>)
         }
         else if(this.lastPage.name === 'course'){
-          return(<CourseDetail course={{
-                description: 'Come evadere le tasse ed essere felici',
-                  time: '08:00 - 09:00',
-                    room: 'VA',
-                      host: 'Emanuele di Vizio'
-              }}></CourseDetail>);
+          return(<CourseDetailPage key={route.title} route={route} navigator={navigator} onBack={this.goBack.bind(this)}></CourseDetailPage>);
         }
       }
     })
