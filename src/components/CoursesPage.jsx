@@ -15,25 +15,19 @@ import CoursesList from './CoursesList'
 var CoursesPage = observer(React.createClass({
     renderToolbar: function(route, navigator) {
         const backButton = route.hasBackButton
-        ? <Ons.BackButton onClick={this.handleClick.bind(this, navigator)}>Back</Ons.BackButton>
+        ? <Ons.BackButton onClick={this.handleClick.bind(this, navigator)}>Indietro</Ons.BackButton>
               : null;
 
         return (
             <Ons.Toolbar>
                 <div className='left'>{backButton}</div>
-                <div className='center'>{route.title}</div>
+                <div className='center'>Corsi</div>
             </Ons.Toolbar>
         );
     },
 
     handleClick: function(navigator) {
-        ons.notification.confirm('Do you really want to go back?')
-            .then((response) => {
-            if (response === 1) {
-                navigator.popPage();
-                this.props.stateManager.goBack();
-            }
-        });
+        navigator.goBack();
     },
 
     render: function() {

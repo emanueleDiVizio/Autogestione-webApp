@@ -9,10 +9,12 @@ var ons = require('onsenui');
 var Ons = require('react-onsenui');
 
 
-var AppContainer = observer(React.createClass({
+var AppContainer = React.createClass({
     renderPage: function(route, navigator) {
+        console.log("Qrender")
+
         return (
-                            this.props.stateManager.pageToDisplay(route, navigator)
+            this.props.stateManager.pageToDisplay(route, navigator)
 
         );
     },
@@ -28,7 +30,7 @@ var AppContainer = observer(React.createClass({
                 />
         );
     }
-}));
+});
 
 
 export default AppContainer;
