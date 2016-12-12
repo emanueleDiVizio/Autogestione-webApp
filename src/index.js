@@ -13,7 +13,7 @@ import CourseDetailPage from './components/CourseDetailPage';
 import CoursesPage from './components/CoursesPage';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
-
+import ServerApi from './api'
 
 
 import {extendObservable, action, autorun} from 'mobx';
@@ -31,6 +31,30 @@ class ListManager {
                 var objs = this.data.map(item => item.title);
                 return(objs)
             }
+        })
+    }
+}
+
+class LoginManager {
+    constructor(){
+        extendObservable(this, {
+            name: "",
+            password: "",
+
+            setUserName: action(function(name){
+                this.name = name;
+            }),
+
+            setPassword: action(function(password){
+                this.password = password;
+            }),
+
+            login: action(function(cb){
+                new ServerApi(true).signInUser({email: this.name, password: this.password}).then(function(response){
+                    console.log(response);
+                    cb();
+                });
+            })
         })
     }
 }
@@ -92,8 +116,9 @@ class AppState {
     }
     pageToDisplay(route, navigator) {
         var nav = new AppNavigator(this, navigator)
+        var manager = new LoginManager()
         if(this.lastPage.name === 'main'){
-            return(<LoginPage key={route.title} navigator={nav}></LoginPage>)
+            return(<LoginPage key={route.title} navigator={nav} manager={manager}></LoginPage>)
         }
         else if(this.lastPage.name === 'signUp'){
             return(<SignUpPage key={route.title} navigator={nav}></SignUpPage>)

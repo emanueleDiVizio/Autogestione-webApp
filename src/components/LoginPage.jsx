@@ -21,8 +21,10 @@ var LoginPage = observer(React.createClass({
         );
     },
 
-    handleSignIn: function(navigator) {
-        navigator.login("id")
+    handleSignIn: function(navigator, manager) {
+        manager.login(function(){
+                    navigator.login("id")
+        })
     },
     
     handleSignUp: function(navigator){
@@ -32,32 +34,37 @@ var LoginPage = observer(React.createClass({
     renderBottomToolbar: function(){
         return(<span></span>)
     },
-    handlePasswordChange:function(){},
-    handleUsernameChange: function(){},
+    handlePasswordChange:function(manager, e){
+        manager.setPassword(e.target.value)
+    },
+    handleUsernameChange: function(manager, e){
+        manager.setUserName(e.target.value)
+    },
 
     render: function() {
         var navigator = this.props.navigator;
+        var manager = this.props.manager;
         return (
             <Ons.Page renderToolbar={this.renderToolbar} renderBottomToolbar={this.renderBottomToolbar}>
                 <Ons.Row verticalAlign="center"><Ons.Col>
                     <section style={{transform: 'translateY(150%)', textAlign: 'center'}}>
                         <p>
                             <Ons.Input
-                                onChange={this.handleUsernameChange}
+                                onChange={this.handleUsernameChange.bind(this, manager)}
                                 modifier='underbar'
                                 float
                                 placeholder='Nome utente' />
                         </p>
                         <p>
                             <Ons.Input
-                                onChange={this.handlePasswordChange}
+                                onChange={this.handlePasswordChange.bind(this, manager)}
                                 modifier='underbar'
                                 type='password'
                                 float
                                 placeholder='Password' />
                         </p>
                         <p>
-                            <Ons.Button modifier='quiet' onClick={this.handleSignIn.bind(this, navigator)} style={{marginRight: '4px'}}>Accedi</Ons.Button>
+                            <Ons.Button modifier='quiet' onClick={this.handleSignIn.bind(this, navigator, manager)} style={{marginRight: '4px'}}>Accedi</Ons.Button>
                             <Ons.Button modifier='quiet' onClick={this.handleSignUp.bind(this, navigator)} style={{marginLeft: '4px'}}>Registrati</Ons.Button>
                         </p>
                     </section></Ons.Col></Ons.Row>
