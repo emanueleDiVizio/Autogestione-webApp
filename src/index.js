@@ -35,22 +35,46 @@ class ListManager {
     }
 }
 
+
+class SignUpManager{
+    constructor(){
+        extendObservable(this, {
+            user: {
+                name: "",
+                surname: "",
+                class: "",
+                email: "", 
+                password: ""
+            },
+
+            signup: action(function(cb){
+                new ServerApi(true).signUpUser(this.user).then(function(response){
+                    console.log(response)
+                    cb()
+                })
+            })
+        })
+    }
+}
+
 class LoginManager {
     constructor(){
         extendObservable(this, {
-            name: "",
-            password: "",
+            user: {
+                email: "",
+                password: ""
+            },
 
             setUserName: action(function(name){
-                this.name = name;
+                this.user.email = name;
             }),
 
             setPassword: action(function(password){
-                this.password = password;
+                this.user.password = password;
             }),
 
             login: action(function(cb){
-                new ServerApi(true).signInUser({email: this.name, password: this.password}).then(function(response){
+                new ServerApi(true).signInUser(this.user).then(function(response){
                     console.log(response);
                     cb();
                 });
@@ -116,12 +140,13 @@ class AppState {
     }
     pageToDisplay(route, navigator) {
         var nav = new AppNavigator(this, navigator)
-        var manager = new LoginManager()
         if(this.lastPage.name === 'main'){
-            return(<LoginPage key={route.title} navigator={nav} manager={manager}></LoginPage>)
+            var loginManager = new LoginManager()
+            return(<LoginPage key={route.title} navigator={nav} manager={loginManager}></LoginPage>)
         }
         else if(this.lastPage.name === 'signUp'){
-            return(<SignUpPage key={route.title} navigator={nav}></SignUpPage>)
+            var signupManager = new SignUpManager()
+            return(<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
 
         }      
         else if(this.lastPage.name === 'courses'){
