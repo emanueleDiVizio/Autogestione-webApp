@@ -18,6 +18,9 @@ import ServerApi from './api'
 
 import {extendObservable, action, autorun} from 'mobx';
 
+
+var isProduction = false;
+
 class ListManager {
     constructor(appState, navigator) {
         extendObservable(this, {
@@ -48,9 +51,11 @@ class SignUpManager{
             },
 
             signup: action(function(cb){
-                new ServerApi(true).signUpUser(this.user).then(function(response){
+                new ServerApi(isProduction ).signUpUser(this.user).then(function(response){
+                    response.json().then(function(json){
+                        cb(json)
+                    })
                     console.log(response)
-                    cb()
                 })
             })
         })
@@ -74,9 +79,11 @@ class LoginManager {
             }),
 
             login: action(function(cb){
-                new ServerApi(true).signInUser(this.user).then(function(response){
+                new ServerApi(isProduction).signInUser(this.user).then(function(response){
+                    response.json().then(function(json){
+                        cb(json);
+                    })                  
                     console.log(response);
-                    cb();
                 });
             })
         })
@@ -143,31 +150,31 @@ class AppState {
         if(this.lastPage.name === 'main'){
             var loginManager = new LoginManager()
             return(<LoginPage key={route.title} navigator={nav} manager={loginManager}></LoginPage>)
+                   }
+                   else if(this.lastPage.name === 'signUp'){
+                var signupManager = new SignUpManager()
+                return(<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
+
+                       }      
+                       else if(this.lastPage.name === 'courses'){
+                    var manager = new ListManager(this, nav);
+                    return(<CoursesPage key={route.title} route={route} navigator={nav} manager={manager}/>)
+                           }
+                           else if(this.lastPage.name === 'course'){
+                        return(<CourseDetailPage key={route.title} route={route} navigator={nav} onBack={this.goBack.bind(this)}></CourseDetailPage>);
+                }
+            }
+
+
         }
-        else if(this.lastPage.name === 'signUp'){
-            var signupManager = new SignUpManager()
-            return(<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
-
-        }      
-        else if(this.lastPage.name === 'courses'){
-            var manager = new ListManager(this, nav);
-            return(<CoursesPage key={route.title} route={route} navigator={nav} manager={manager}/>)
-        }
-        else if(this.lastPage.name === 'course'){
-            return(<CourseDetailPage key={route.title} route={route} navigator={nav} onBack={this.goBack.bind(this)}></CourseDetailPage>);
-        }
-    }
 
 
-}
+        var state = new AppState()
 
-
-var state = new AppState()
-
-ons.ready(function() {
-    ReactDOM.render(
-        <AppContainer stateManager={state}/>,
-        document.getElementById('root')
-    );
-});
+        ons.ready(function() {
+            ReactDOM.render(
+                <AppContainer stateManager={state}/>,
+                document.getElementById('root')
+            );
+        });
 

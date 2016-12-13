@@ -12,6 +12,7 @@ var Ons = require('react-onsenui');
 
 import CoursesList from './CoursesList'
 
+
 var LoginPage = observer(React.createClass({
     renderToolbar: function(){
         return (
@@ -22,15 +23,19 @@ var LoginPage = observer(React.createClass({
     },
 
     handleSignIn: function(navigator, manager) {
-        manager.login(function(){
-                    navigator.login("id")
+        manager.login(function(res){
+            if(res.success){
+                navigator.login(res.user.id)
+            }else{
+                ons.notification.alert({message: "Nome utente o password errati.", title: "Attenzione!"})
+            }
         })
     },
-    
+
     handleSignUp: function(navigator){
         navigator.beginSignUp();
     },
-    
+
     renderBottomToolbar: function(){
         return(<span></span>)
     },

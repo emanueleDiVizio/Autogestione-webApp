@@ -25,15 +25,15 @@ var SignUpPage = observer(React.createClass({
     },
 
     handleSignUp: function(manager, navigator){
-        manager.signup(function(){
-            navigator.signUp();
+        manager.signup(function(res){
+            if(res.success){
+                navigator.login(res.user.id)
+            }else{
+                ons.notification.alert({message: "Nome utente o password errati.", title: "Attenzione!"})
+            }
         })
     },
 
-    renderBottomToolbar: function(){
-        return(<span></span>)
-    },
-    
     handleNameChange: function(manager, e){
         manager.user.name = e.target.value;
     },
@@ -54,7 +54,7 @@ var SignUpPage = observer(React.createClass({
         var navigator = this.props.navigator;
         var manager = this.props.manager;
         return (
-            <Ons.Page renderToolbar={this.renderToolbar} renderBottomToolbar={this.renderBottomToolbar}>
+            <Ons.Page renderToolbar={this.renderToolbar}>
                 <Ons.Row verticalAlign="center"><Ons.Col>
                     <section style={{transform: 'translateY(50%)', textAlign: 'center'}}>
                         <p>
