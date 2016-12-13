@@ -35,7 +35,8 @@ class CoursesListManager {
 			}),
 			
 			select: action(function (index) {
-				navigator.goToCoursePage(index, this.data[index].id, this.data[index].name)
+				console.log("index: " + index)
+				navigator.goToCoursePage(index, this.data[index].id, this.data[index].name, this.data[index])
 			}),
 			
 			get dataNames() {
@@ -99,10 +100,10 @@ class AppNavigator {
 		this.navigator = navigator;
 	}
 	
-	goToCoursePage(index, id, title) {
+	goToCoursePage(index, id, title, course) {
 		console.log("course")
-		this.appState.pages.push({name: 'course', index: index, id: id});
-		this.navigator.pushPage({title: title, hasBackButton: true})
+		this.appState.pages.push({name: 'course', index: index, id: id, course: course});
+		this.navigator.pushPage({title: title, hasBackButton: true, course: course})
 		
 		
 	}
@@ -151,21 +152,23 @@ class AppState {
 	
 	pageToDisplay(route, navigator) {
 		var nav = new AppNavigator(this, navigator)
-		if (this.lastPage.name === 'main') {
+		var lastPage = this.lastPage;
+		if (lastPage.name === 'main') {
 			var loginManager = new LoginManager()
 			return (<LoginPage key={route.title} navigator={nav} manager={loginManager}></LoginPage>)
 		}
-		else if (this.lastPage.name === 'signUp') {
+		else if (lastPage.name === 'signUp') {
 			var signupManager = new SignUpManager()
 			return (<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
 			
 		}
-		else if (this.lastPage.name === 'courses') {
+		else if (lastPage.name === 'courses') {
 			var manager = new CoursesListManager(this, nav);
 			return (<CoursesPage key={route.title} route={route} navigator={nav} manager={manager}/>)
 		}
-		else if (this.lastPage.name === 'course') {
-			return (<CourseDetailPage key={route.title} route={route} navigator={nav}
+		else if (lastPage.name === 'course') {
+			console.log(route)
+			return (<CourseDetailPage key={route.title} route={route}  course={lastPage.course} navigator={nav}
 									  onBack={this.goBack.bind(this)}></CourseDetailPage>);
 		}
 	}

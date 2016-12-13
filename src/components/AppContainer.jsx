@@ -11,8 +11,6 @@ var Ons = require('react-onsenui');
 
 var AppContainer = React.createClass({
     renderPage: function(route, navigator) {
-        console.log("Qrender")
-
         return (
             this.props.stateManager.pageToDisplay(route, navigator)
 

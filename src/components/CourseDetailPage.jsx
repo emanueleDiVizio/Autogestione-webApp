@@ -35,25 +35,31 @@ var CourseDetailPage = observer(React.createClass({
             if (response === 1) {
             }
         });
-    }, 
+    },
     
     renderBottomToolbar: function(){
       return(
       <Ons.BottomToolbar modifier="material"><Ons.Button modifier="large--cta" onClick={this.handleButtonClick}>Partecipa!</Ons.Button> </Ons.BottomToolbar>
-      )  
+      )
     },
 
     render: function() {
         var route = this.props.route;
         var navigator = this.props.navigator;
-       return (
+        console.log(this.props.course)
+		let course = this.props.course;
+		return (
             <Ons.Page renderToolbar={this.renderToolbar.bind(this, route, navigator)}
                 renderBottomToolbar={this.renderBottomToolbar}>
            <CourseDetail course={{
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                  time: '08:00 - 09:00',
-                    room: 'VA',
-                      host: 'Emanuele di Vizio'
+           	description: course.description,
+           	time: course.startHour + " - " + course.endHour,
+                    room: course.room,
+                      host: course.hosts.map(function (host) {
+						  return host.name
+					  }).reduce(function (a, b) {
+						  return a + ", " + b;
+					  }, "")
               }}></CourseDetail>
            
            </Ons.Page>
