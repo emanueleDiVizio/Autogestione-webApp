@@ -56,10 +56,10 @@ var CourseDetailPage = observer(React.createClass({
            	time: course.startHour + " - " + course.endHour,
                     room: course.room,
                       host: course.hosts.map(function (host) {
-						  return host.name
+						  return host.name + host.surname
 					  }).reduce(function (a, b) {
 						  return a + ", " + b;
-					  }, "")
+					  }/*, "" //IN CASE IT'S EMPTY */)
               }}></CourseDetail>
            
            </Ons.Page>
