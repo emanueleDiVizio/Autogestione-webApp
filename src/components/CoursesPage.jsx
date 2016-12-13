@@ -10,7 +10,7 @@ var Ons = require('react-onsenui');
 
 
 
-import CoursesList from './CoursesList'
+import CoursesListContainer from './CoursesListC'
 
 var CoursesPage = observer(React.createClass({
     renderToolbar: function(route, navigator) {
@@ -36,7 +36,7 @@ var CoursesPage = observer(React.createClass({
         var manager = this.props.manager;
        return (
             <Ons.Page renderToolbar={this.renderToolbar.bind(this, route, navigator)}>
-                <CoursesList source={manager}/>
+                <CoursesListContainer manager={manager}/>
             </Ons.Page>
         );
     }

@@ -12,12 +12,11 @@ var Ons = require('react-onsenui');
 const CoursesList = observer(React.createClass({
     renderRow: function(row, index) {
 
-        const object = this.props.source.data[index];
 
         return (
-            <Ons.ListItem key={index} onClick={() => {this.props.source.select(index)}} tappable>
+            <Ons.ListItem key={index} onClick={this.props.handleOnClick.bind(this.props.parent, index)} tappable>
                 <div className='center'>
-                    {object.title}
+                    {this.props.dataSource[index].name}
                 </div>
             </Ons.ListItem>
         );
@@ -26,9 +25,9 @@ const CoursesList = observer(React.createClass({
     render: function() {
         return (
             <Ons.List
-                dataSource={this.props.source.dataNames}
+                dataSource={this.props.dataSource.map(item => item.name)}
                 renderRow={this.renderRow}
-                renderHeader={() => <Ons.ListHeader>Courses</Ons.ListHeader>}
+                renderHeader={() => <Ons.ListHeader>{this.props.title}</Ons.ListHeader>}
                 />
         );
     }
