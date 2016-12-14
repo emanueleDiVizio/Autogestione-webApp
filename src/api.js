@@ -1,6 +1,6 @@
 class ServerApi {
     constructor(){
-    	var isProduction = false;
+    	var isProduction = true;
         this.url = isProduction ? 'https://autogestione-server.herokuapp.com/' : 'http://localhost:1337/';
 
     }
