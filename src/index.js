@@ -21,6 +21,47 @@ import {extendObservable, action, autorun} from 'mobx';
 
 let serverApi = new ServerApi();
 
+class CourseDetailManager {
+	constructor(courseObj, navigator, api) {
+		extendObservable(this, {
+			course: {},
+			
+			displayCourse: action(function () {
+				console.log(courseObj)
+				this.course = courseObj;
+			}),
+			
+			get courseToDisplay(){
+				return {
+					description: this.course.description,
+					time: this.course.startHour + " - " + this.course.endHour,
+					room: this.course.room,
+					host: (this.course.hosts != null) ? this.course.hosts.map(function (host) {
+						return host.name + " " + host.surname
+					}).reduce(function (a, b) {
+						return a + ", " + b;
+					}, "") : []
+				}
+			},
+			
+			get title(){
+				return this.course.name;
+			},
+			
+			goBack: action(function(){
+				navigator.goBack()
+			}),
+			
+			join: action(function(){
+				api.joinCourse(this.course.id)
+			})
+		})
+	}
+	
+	
+}
+
+
 class CoursesListManager {
 	constructor(appState, navigator) {
 		extendObservable(this, {
@@ -167,9 +208,8 @@ class AppState {
 			return (<CoursesPage key={route.title} route={route} navigator={nav} manager={manager}/>)
 		}
 		else if (lastPage.name === 'course') {
-			console.log(route)
-			return (<CourseDetailPage key={route.title} route={route}  course={lastPage.course} navigator={nav}
-									  onBack={this.goBack.bind(this)}></CourseDetailPage>);
+			var courseDetailManager = new CourseDetailManager(lastPage.course, nav, serverApi.userApi());
+			return (<CourseDetailPage key={route.title} manager={courseDetailManager}></CourseDetailPage>);
 		}
 	}
 	

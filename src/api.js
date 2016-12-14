@@ -1,6 +1,6 @@
 class ServerApi {
     constructor(){
-    	var isProduction = true;
+    	var isProduction = false;
         this.url = isProduction ? 'https://autogestione-server.herokuapp.com/' : 'http://localhost:1337/';
 
     }
@@ -40,7 +40,14 @@ class UserApi {
 			})
 		})).then(responseToJson)
 	}
-	
+	joinCourse(id){
+		return fetch(this.url + "/joinCourse", {
+			method: 'post',
+			body: JSON.stringify({
+				courseId: id
+			})
+		}).then(responseToJson)
+	}
 	coursesToJoin(){
 		return(fetch(this.url + "/availableCoursesToJoin")).then(extractCoursesFromResponse)
 	}
