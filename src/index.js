@@ -23,15 +23,15 @@ let serverApi = new ServerApi();
 class CourseDetailManager {
 	constructor(courseObj, navigator, api) {
 		extendObservable(this, {
-			course: {},
+			course: courseObj,
 			
 			displayCourse: action(function () {
 				console.log(courseObj)
-				this.course = courseObj;
 			}),
 			
 			get courseToDisplay(){
-				console.log("attendees : " + this.course.hosts.slice())
+				// console.log("attendees : " + this.course.hosts.slice())
+				// console.log(this.course.hosts[0])
 				return {
 					description: this.course.description,
 					time: this.course.startHour + " - " + this.course.endHour,
@@ -45,12 +45,12 @@ class CourseDetailManager {
 			},
 			
 			get courseAttendees(){
-				console.log("attendees: " + this.course.hosts.slice());
-				return []
+				return this.course.attendees;
 			},
 			
 			checkAttendee: action(function(index){
 				let attendee = this.course.hosts[index];
+				attendee.isPresent = true;
 				api.checkAttendee(attendee.name + " " + attendee.surname)
 			}),
 			get title(){

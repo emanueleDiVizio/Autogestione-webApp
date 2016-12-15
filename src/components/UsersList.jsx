@@ -9,7 +9,7 @@ var ons = require('onsenui');
 var Ons = require('react-onsenui');
 
 
-const CoursesList = observer(React.createClass({
+const UserList = observer(React.createClass({
     renderRow: function(row, index) {
 	
 	
@@ -18,6 +18,9 @@ const CoursesList = observer(React.createClass({
             <Ons.ListItem key={index} onClick={this.props.handleOnClick.bind(this.props.parent, index)} tappable>
                 <div className='center'>
                     {dataSource.name + " " + dataSource.surname}
+                </div>
+                <div className='left'>
+                    {dataSource.isPresent ? <Ons.Icon icon='ion-checkmark, material:md-check' /> : <div></div>}
                 </div>
             </Ons.ListItem>
         );
@@ -28,10 +31,12 @@ const CoursesList = observer(React.createClass({
             <Ons.List
                 dataSource={this.props.dataSource.map(item => item.name)}
                 renderRow={this.renderRow}
-                />
+                renderHeader={() => <Ons.ListHeader>{"Partecipanti"}</Ons.ListHeader>}
+
+            />
         );
     }
 }));
 
 
-export default CoursesList;
+export default UserList;
