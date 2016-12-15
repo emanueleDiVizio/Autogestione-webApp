@@ -15,8 +15,7 @@ import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import ServerApi from './api'
 
-
-import {extendObservable, action, autorun} from 'mobx';
+import {extendObservable, action, autorun, toJS} from 'mobx';
 
 
 let serverApi = new ServerApi();
@@ -32,6 +31,7 @@ class CourseDetailManager {
 			}),
 			
 			get courseToDisplay(){
+				console.log("attendees : " + this.course.hosts.slice())
 				return {
 					description: this.course.description,
 					time: this.course.startHour + " - " + this.course.endHour,
@@ -44,6 +44,15 @@ class CourseDetailManager {
 				}
 			},
 			
+			get courseAttendees(){
+				console.log("attendees: " + this.course.hosts.slice());
+				return []
+			},
+			
+			checkAttendee: action(function(index){
+				let attendee = this.course.hosts[index];
+				api.checkAttendee(attendee.name + " " + attendee.surname)
+			}),
 			get title(){
 				return this.course.name;
 			},

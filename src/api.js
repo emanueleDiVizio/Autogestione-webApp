@@ -50,6 +50,10 @@ class UserApi {
 			})
 		}).then(responseToJson)
 	}
+	
+	checkAttendee(id){
+		console.log(id)
+	}
 	coursesToJoin(){
 		return(fetch(this.url + "/availableCoursesToJoin")).then(extractCoursesFromResponse)
 	}

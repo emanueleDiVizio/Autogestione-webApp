@@ -7,14 +7,6 @@ var Ons = require('react-onsenui');
 
 
 const CourseDetail = observer(React.createClass({
-    
-    handleClick: function(){
-        ons.notification.confirm('Do you really want to join?')
-            .then((response) => {
-            if (response === 1) {
-            }
-        });  
-    },
     render: function(){
         var course = this.props.course
         

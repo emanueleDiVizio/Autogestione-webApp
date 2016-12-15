@@ -9,7 +9,7 @@ var ons = require('onsenui');
 var Ons = require('react-onsenui');
 
 import CourseDetail from './CourseDetail';
-
+import UsersList from './UsersList';
 
 
 var CourseDetailPage = observer(React.createClass({
@@ -54,6 +54,7 @@ var CourseDetailPage = observer(React.createClass({
 			<Ons.Page renderToolbar={this.renderToolbar.bind(this, manager)}
 					  renderBottomToolbar={this.renderBottomToolbar.bind(this, manager)}>
 				<CourseDetail course={manager.courseToDisplay}></CourseDetail>
+				<UsersList parent={this} dataSource={manager.courseAttendees} handleOnClick={manager.checkAttendee}></UsersList>
 			
 			</Ons.Page>
 		);
