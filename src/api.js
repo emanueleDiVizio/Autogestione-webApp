@@ -23,7 +23,9 @@ class UserApi {
 			body: JSON.stringify({
 				name: user.name,
 				surname: user.surname,
-				class: user.class,
+				year: "",
+				section: "",
+				building: "",
 				email: user.email,
 				password:user.password
 			})
