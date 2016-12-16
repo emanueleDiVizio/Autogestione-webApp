@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c24a29ad-f916-449e-8974-12dea35145d3" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/CoursesListPage.jsx" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/CoursesListC.jsx" afterPath="$PROJECT_DIR$/src/components/CoursesPageContainer.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/api.js" afterPath="$PROJECT_DIR$/src/api.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/CoursesPage.jsx" afterPath="$PROJECT_DIR$/src/components/CoursesPage.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/index.js" afterPath="$PROJECT_DIR$/src/index.js" />
-    </list>
+    <list default="true" id="c24a29ad-f916-449e-8974-12dea35145d3" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
