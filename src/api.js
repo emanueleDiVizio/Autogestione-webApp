@@ -4,11 +4,11 @@ class ServerApi {
         this.url = isProduction ? 'https://autogestione-server.herokuapp.com/' : 'http://localhost:1337/';
 
     }
-    
+
     userApi(){
     	return new UserApi(this.url)
 	}
-    
+
 }
 
 
@@ -16,11 +16,11 @@ class UserApi {
 	constructor(url){
 		this.url = url + "user"
 	}
-	
+
 	signUpUser(user){
 		return(fetch(this.url + '/signup', {
 			method: 'post',
-			body: JSON.stringify({
+            body: JSON.stringify({
 				name: user.name,
 				surname: user.surname,
 				year: "",
@@ -31,12 +31,12 @@ class UserApi {
 			})
 		})).then(responseToJson)
 	}
-	
+
 	signInUser(user){
 		console.log(user)
 		return(fetch(this.url + '/login', {
 			method: 'post',
-			body: JSON.stringify({
+            body: JSON.stringify({
 				email: user.email,
 				password:user.password
 			})
@@ -44,30 +44,39 @@ class UserApi {
 	}
 	joinCourse(id){
 		return fetch(this.url + "/joinCourse", {
-			method: 'post',
+            credentials: 'include',
+            method: 'post',
 			body: JSON.stringify({
 				courseId: id
 			})
 		}).then(responseToJson)
 	}
-	
+
 	checkAttendee(id){
 		console.log(id)
 	}
 	coursesToJoin(){
-		return(fetch(this.url + "/availableCoursesToJoin")).then(extractCoursesFromResponse)
+		return(fetch(this.url + "/availableCoursesToJoin", {
+            credentials: 'include'
+        })).then(extractCoursesFromResponse)
 	}
-	
+
 	coursesToHost(){
-		return(fetch(this.url + "/availableCoursesToHost")).then(extractCoursesFromResponse)
+		return(fetch(this.url + "/availableCoursesToHost", {
+            credentials: 'include'
+        })).then(extractCoursesFromResponse)
 	}
-	
+
 	joinedCourses(){
-		return fetch(this.url + "/joinedCourses").then(extractCoursesFromResponse)
+		return fetch(this.url + "/joinedCourses", {
+            credentials: 'include'
+        }).then(extractCoursesFromResponse)
 	}
-	
+
 	hostedCourses(){
-		return fetch(this.url + "/hostedCourses").then(extractCoursesFromResponse)
+		return fetch(this.url + "/hostedCourses", {
+            credentials: 'include'
+        }).then(extractCoursesFromResponse)
 	}
 }
 

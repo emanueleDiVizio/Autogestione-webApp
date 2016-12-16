@@ -10,33 +10,36 @@ var Ons = require('react-onsenui');
 
 
 
-import CoursesListContainer from './CoursesListC'
+import CoursesList from './CoursesList'
 
 var CoursesPage = observer(React.createClass({
-    renderToolbar: function(route, navigator) {
-        const backButton = route.hasBackButton
-        ? <Ons.BackButton onClick={this.handleClick.bind(this, navigator)}>Indietro</Ons.BackButton>
-              : null;
+    generateTitle: function (type) {
+        switch(type){
+            case 0:
+                return "Corsi Disponibili";
+            case 1:
+                return "Corsi Da Seguire";
+            case 2:
+                return "Corsi Da Gestire";
+        }
+    },
 
+    renderToolbar: function(handleOnBack) {
         return (
             <Ons.Toolbar>
-                <div className='left'>{backButton}</div>
-                <div className='center'>Corsi</div>
+                <div className='center'>{this.generateTitle(this.props.type)}</div>
             </Ons.Toolbar>
         );
     },
 
-    handleClick: function(navigator) {
-        navigator.goBack();
-    },
 
     render: function() {
-        var route = this.props.route;
-        var navigator = this.props.navigator;
-        var manager = this.props.manager;
-       return (
-            <Ons.Page renderToolbar={this.renderToolbar.bind(this, route, navigator)}>
-                <CoursesListContainer manager={manager}/>
+        var data = this.props.data;
+        console.log(this.props.data)
+
+        return (
+            <Ons.Page renderToolbar={this.renderToolbar}>
+                <CoursesList parent={this.props.parent} dataSource={data} title="Corsi" handleOnClick={this.props.handleOnClick}></CoursesList>
             </Ons.Page>
         );
     }

@@ -10,7 +10,7 @@ var Ons = require('react-onsenui');
 
 
 import CourseDetailPage from './components/CourseDetailPage';
-import CoursesPage from './components/CoursesPage';
+import CoursesListPage from './components/CoursesListPage';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import ServerApi from './api'
@@ -24,11 +24,11 @@ class CourseDetailManager {
 	constructor(courseObj, navigator, api) {
 		extendObservable(this, {
 			course: courseObj,
-			
+
 			displayCourse: action(function () {
 				console.log(courseObj)
 			}),
-			
+
 			get courseToDisplay(){
 				// console.log("attendees : " + this.course.hosts.slice())
 				// console.log(this.course.hosts[0])
@@ -43,11 +43,12 @@ class CourseDetailManager {
 					}, "") : []
 				}
 			},
-			
+
 			get courseAttendees(){
+			    console.log(this.course)
 				return this.course.attendees;
 			},
-			
+
 			checkAttendee: action(function(index){
 				let attendee = this.course.hosts[index];
 				attendee.isPresent = true;
@@ -56,45 +57,96 @@ class CourseDetailManager {
 			get title(){
 				return this.course.name;
 			},
-			
+
 			goBack: action(function(){
 				navigator.goBack()
 			}),
-			
+
 			join: action(function(){
 				api.joinCourse(this.course.id)
 			})
 		})
 	}
-	
-	
+
+
 }
 
 
 class CoursesListManager {
 	constructor(appState, navigator) {
+
+        this.AVAILABLE = 0;
+        this.JOINED = 1;
+        this.HOSTED = 2;
 		extendObservable(this, {
 			data: [],
-			
-			displayCoursesToJoin: action(function(index){
-				var parent = this;
-				serverApi.userApi().coursesToJoin().then(function(courses){
-					console.log(courses)
-					parent.data = courses;
-				})
+
+			type: this.AVAILABLE,
+
+			displayCourses: action(function(index){
+				if(this.data.slice().length === 0){
+					var scope =this;
+                    serverApi.userApi().coursesToJoin().then(function(courses){
+                        console.log(courses)
+                        scope.data = courses;
+                    })
+				}
 			}),
-			
+
+			goBack: action(function(){
+                appState.goBack();
+			}),
+
 			select: action(function (index) {
 				console.log("index: " + index)
 				navigator.goToCoursePage(index, this.data[index].id, this.data[index].name, this.data[index])
 			}),
-			
+
+			setCoursesToDisplay: action(function(type){
+                var parent = this;
+					switch(type){
+                        case this.AVAILABLE:
+                            serverApi.userApi().coursesToJoin().then(function(courses){
+                                console.log(courses)
+                                parent.data = courses;
+                            })
+                            break;
+                        case this.JOINED:
+                            serverApi.userApi().joinedCourses().then(function(courses){
+                                console.log(courses)
+                                parent.data = courses;
+                            })
+                            break;
+                        case this.HOSTED:
+                            serverApi.userApi().hostedCourses().then(function(courses){
+                                console.log(courses)
+                                parent.data = courses;
+                            })
+                            break;
+                    }
+			}
+			),
+
 			get dataNames() {
 				var objs = this.data.map(item => item.name);
 				return (objs)
 			}
 		})
 	}
+}
+
+
+class CoursesPageManager {
+    constructor(appState, navigator){
+        this.appState = appState;
+        this.navigator = navigator;
+    }
+
+    buildListManager(type){
+        let coursesListManager = new CoursesListManager(this.appState, this.navigator);
+        coursesListManager.setCoursesToDisplay(type)
+        return coursesListManager;
+    }
 }
 
 class SignUpManager {
@@ -107,7 +159,7 @@ class SignUpManager {
 				email: "",
 				password: ""
 			},
-			
+
 			signup: action(function (cb) {
 				serverApi.userApi().signUpUser(this.user).then(function (json) {
 					cb(json)
@@ -115,7 +167,7 @@ class SignUpManager {
 			})
 		})
 	}
-	
+
 }
 
 class LoginManager {
@@ -125,15 +177,15 @@ class LoginManager {
 				email: "",
 				password: ""
 			},
-			
+
 			setUserName: action(function (name) {
 				this.user.email = name;
 			}),
-			
+
 			setPassword: action(function (password) {
 				this.user.password = password;
 			}),
-			
+
 			login: action(function (cb) {
 				serverApi.userApi().signInUser(this.user).then(function (json) {
 					cb(json);
@@ -149,34 +201,34 @@ class AppNavigator {
 		this.appState = appState;
 		this.navigator = navigator;
 	}
-	
+
 	goToCoursePage(index, id, title, course) {
 		console.log("course")
 		this.appState.pages.push({name: 'course', index: index, id: id, course: course});
 		this.navigator.pushPage({title: title, hasBackButton: true, course: course})
-		
-		
+
+
 	}
-	
+
 	goToCoursesPage() {
 		this.appState.pages.push({name: 'courses'});
 		this.navigator.pushPage({title: 'courses', hasBackButton: false})
 	}
-	
+
 	goBack() {
 		console.log("goback")
 		this.appState.goBack();
 		this.navigator.popPage();
 	}
-	
+
 	login(id) {
 		this.goToCoursesPage();
 	}
-	
+
 	signUp() {
 		this.goToCoursesPage();
 	}
-	
+
 	beginSignUp() {
 		this.appState.pages.push({name: 'signUp'});
 		this.navigator.pushPage({title: 'signUp', hasBackButton: true})
@@ -187,19 +239,19 @@ class AppState {
 	constructor() {
 		extendObservable(this, {
 			pages: [{name: 'main'}],
-			
+
 			get lastPage() {
 				return (this.pages.slice(-1)[0])
 			},
-			
+
 			goBack: action(function () {
 				this.pages.pop();
 			}),
-			
-			
+
+
 		})
 	}
-	
+
 	pageToDisplay(route, navigator) {
 		var nav = new AppNavigator(this, navigator)
 		var lastPage = this.lastPage;
@@ -210,19 +262,19 @@ class AppState {
 		else if (lastPage.name === 'signUp') {
 			var signupManager = new SignUpManager()
 			return (<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
-			
+
 		}
 		else if (lastPage.name === 'courses') {
-			var manager = new CoursesListManager(this, nav);
-			return (<CoursesPage key={route.title} route={route} navigator={nav} manager={manager}/>)
+			var manager = new CoursesPageManager(this, nav)
+			return (<CoursesListPage key={route.title} route={route} manager={manager}/>)
 		}
 		else if (lastPage.name === 'course') {
 			var courseDetailManager = new CourseDetailManager(lastPage.course, nav, serverApi.userApi());
 			return (<CourseDetailPage key={route.title} manager={courseDetailManager}></CourseDetailPage>);
 		}
 	}
-	
-	
+
+
 }
 
 
