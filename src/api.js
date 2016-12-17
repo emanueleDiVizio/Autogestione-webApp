@@ -42,41 +42,53 @@ class UserApi {
 			})
 		})).then(responseToJson)
 	}
-	joinCourse(id){
+	joinCourse(courseId, userId){
 		return fetch(this.url + "/joinCourse", {
-            credentials: 'include',
             method: 'post',
 			body: JSON.stringify({
-				courseId: id
+				courseId: courseId,
+				userId: userId
 			})
 		}).then(responseToJson)
 	}
 
-	checkAttendee(id){
-		console.log(id)
+	checkAttendee(courseId, userId){
+		console.log(courseId + userId)
 	}
-	coursesToJoin(){
+	coursesToJoin(userId){
 		return(fetch(this.url + "/availableCoursesToJoin", {
-            credentials: 'include'
+			method: 'post',
+			body: JSON.stringify({
+				userId: userId
+			})
         })).then(extractCoursesFromResponse)
 	}
 
-	coursesToHost(){
+	coursesToHost(userId){
 		return(fetch(this.url + "/availableCoursesToHost", {
-            credentials: 'include'
-        })).then(extractCoursesFromResponse)
+			method: 'post',
+			body: JSON.stringify({
+				userId: userId
+			})
+		})).then(extractCoursesFromResponse)
 	}
 
-	joinedCourses(){
+	joinedCourses(userId){
 		return fetch(this.url + "/joinedCourses", {
-            credentials: 'include'
-        }).then(extractCoursesFromResponse)
+			method: 'post',
+			body: JSON.stringify({
+				userId: userId
+			})
+		}).then(extractCoursesFromResponse)
 	}
 
-	hostedCourses(){
+	hostedCourses(userId){
 		return fetch(this.url + "/hostedCourses", {
-            credentials: 'include'
-        }).then(extractCoursesFromResponse)
+			method: 'post',
+			body: JSON.stringify({
+				userId: userId
+			})
+		}).then(extractCoursesFromResponse)
 	}
 }
 

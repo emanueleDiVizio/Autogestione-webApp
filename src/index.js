@@ -14,6 +14,7 @@ import CoursesListPage from './components/CoursesListPage';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import ServerApi from './api'
+import UserApi from './stores/UserStore'
 
 import {extendObservable, action, autorun, toJS} from 'mobx';
 
@@ -52,7 +53,7 @@ class CourseDetailManager {
 			checkAttendee: action(function(index){
 				let attendee = this.course.hosts[index];
 				attendee.isPresent = true;
-				api.checkAttendee(attendee.name + " " + attendee.surname)
+				api.checkAttendee(this.course.id, attendee.id)
 			}),
 			get title(){
 				return this.course.name;
@@ -73,7 +74,7 @@ class CourseDetailManager {
 
 
 class CoursesListManager {
-	constructor(appState, navigator) {
+	constructor(appState, navigator, userCoursesApi) {
 
         this.AVAILABLE = 0;
         this.JOINED = 1;
@@ -86,7 +87,7 @@ class CoursesListManager {
 			displayCourses: action(function(index){
 				if(this.data.slice().length === 0){
 					var scope =this;
-                    serverApi.userApi().coursesToJoin().then(function(courses){
+                    userCoursesApi.coursesToJoin().then(function(courses){
                         console.log(courses)
                         scope.data = courses;
                     })
@@ -106,19 +107,19 @@ class CoursesListManager {
                 var parent = this;
 					switch(type){
                         case this.AVAILABLE:
-                            serverApi.userApi().coursesToJoin().then(function(courses){
+                            userCoursesApi.coursesToJoin().then(function(courses){
                                 console.log(courses)
                                 parent.data = courses;
                             })
                             break;
                         case this.JOINED:
-                            serverApi.userApi().joinedCourses().then(function(courses){
+                            userCoursesApi.joinedCourses().then(function(courses){
                                 console.log(courses)
                                 parent.data = courses;
                             })
                             break;
                         case this.HOSTED:
-                            serverApi.userApi().hostedCourses().then(function(courses){
+                            userCoursesApi.hostedCourses().then(function(courses){
                                 console.log(courses)
                                 parent.data = courses;
                             })
@@ -137,20 +138,21 @@ class CoursesListManager {
 
 
 class CoursesPageManager {
-    constructor(appState, navigator){
+    constructor(appState, navigator, userApi){
         this.appState = appState;
         this.navigator = navigator;
+        this.userApi = userApi;
     }
 
     buildListManager(type){
-        let coursesListManager = new CoursesListManager(this.appState, this.navigator);
+        let coursesListManager = new CoursesListManager(this.appState, this.navigator, this.userApi);
         coursesListManager.setCoursesToDisplay(type)
         return coursesListManager;
     }
 }
 
 class SignUpManager {
-	constructor() {
+	constructor(userApi) {
 		extendObservable(this, {
 			user: {
 				name: "",
@@ -161,7 +163,7 @@ class SignUpManager {
 			},
 
 			signup: action(function (cb) {
-				serverApi.userApi().signUpUser(this.user).then(function (json) {
+				userApi.signupUser(this.user).then(function (json) {
 					cb(json)
 				});
 			})
@@ -171,7 +173,7 @@ class SignUpManager {
 }
 
 class LoginManager {
-	constructor() {
+	constructor(userApi) {
 		extendObservable(this, {
 			user: {
 				email: "",
@@ -187,7 +189,7 @@ class LoginManager {
 			}),
 
 			login: action(function (cb) {
-				serverApi.userApi().signInUser(this.user).then(function (json) {
+				userApi.signInUser(this.user).then(function (json) {
 					cb(json);
 				});
 			})
@@ -237,6 +239,7 @@ class AppNavigator {
 
 class AppState {
 	constructor() {
+		this.userApi = new UserApi(new ServerApi());
 		extendObservable(this, {
 			pages: [{name: 'main'}],
 
@@ -256,20 +259,20 @@ class AppState {
 		var nav = new AppNavigator(this, navigator)
 		var lastPage = this.lastPage;
 		if (lastPage.name === 'main') {
-			var loginManager = new LoginManager()
+			var loginManager = new LoginManager(this.userApi)
 			return (<LoginPage key={route.title} navigator={nav} manager={loginManager}></LoginPage>)
 		}
 		else if (lastPage.name === 'signUp') {
-			var signupManager = new SignUpManager()
+			var signupManager = new SignUpManager(this.userApi)
 			return (<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
 
 		}
 		else if (lastPage.name === 'courses') {
-			var manager = new CoursesPageManager(this, nav)
+			var manager = new CoursesPageManager(this, nav, this.userApi.userCoursesApi())
 			return (<CoursesListPage key={route.title} route={route} manager={manager}/>)
 		}
 		else if (lastPage.name === 'course') {
-			var courseDetailManager = new CourseDetailManager(lastPage.course, nav, serverApi.userApi());
+			var courseDetailManager = new CourseDetailManager(lastPage.course, nav, this.userApi.userCoursesApi());
 			return (<CourseDetailPage key={route.title} manager={courseDetailManager}></CourseDetailPage>);
 		}
 	}
