@@ -10,6 +10,12 @@ var Ons = require('react-onsenui');
 
 
 var SignUpPage = observer(React.createClass({
+	
+	getInitialState: function(){
+		return {
+			building: "Centrale"
+		}
+	},
     renderToolbar: function(){
         return (
             <Ons.Toolbar>
@@ -49,14 +55,36 @@ var SignUpPage = observer(React.createClass({
     handlePasswordChange: function(manager, e){
         manager.user.password = e.target.value;
     },
-
+	handleBuildingChange: function(building){
+    	this.setState({building: building})
+		this.props.manager.user.building = building;
+	},
+	
+	renderRadioRow(row) {
+		return (
+			<Ons.ListItem key={row} tappable>
+				<label className='left'>
+					<Ons.Input
+						inputId={`radio-${row}`}
+						checked={row === this.state.building}
+						onChange={this.handleBuildingChange.bind(this, row)}
+						type='radio'
+					/>
+				</label>
+				<label htmlFor={`radio-${row}`} className='center'>
+					{row}
+				</label>
+			</Ons.ListItem>
+		)
+	},
+	
     render: function() {
         var navigator = this.props.navigator;
         var manager = this.props.manager;
         return (
             <Ons.Page renderToolbar={this.renderToolbar}>
                 <Ons.Row verticalAlign="center"><Ons.Col>
-                    <section style={{transform: 'translateY(50%)', textAlign: 'center'}}>
+                    <section style={{transform: 'translateY(25%)', textAlign: 'center'}}>
                         <p>
                             <Ons.Input
                                 onChange={this.handleNameChange.bind(this, manager)}
@@ -93,6 +121,11 @@ var SignUpPage = observer(React.createClass({
                                 float
                                 placeholder='Password' />
                         </p>
+						<Ons.List
+							dataSource={["Centrale", "Succursale"]}
+							renderHeader={() => <Ons.ListHeader>Sede</Ons.ListHeader>}
+							renderRow={this.renderRadioRow}
+						/>
                         <p>
                             <Ons.Button modifier='quiet' onClick={this.handleSignUp.bind(this, manager,  navigator)} style={{marginLeft: '4px'}}>Registrati</Ons.Button>
                         </p>

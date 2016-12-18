@@ -24,7 +24,7 @@ class UserApi {
 				name: user.name + " " + user.surname,
 				year: user.year,
 				section: "",
-				building: "",
+				building: user.building,
 				email: user.email,
 				password:user.password
 			})

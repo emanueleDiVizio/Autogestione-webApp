@@ -169,7 +169,8 @@ class SignUpManager {
 				surname: "",
 				class: "",
 				email: "",
-				password: ""
+				password: "",
+				building: "Centrale"
 			},
 
 			signup: action(function (cb) {
