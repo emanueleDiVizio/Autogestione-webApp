@@ -1,4 +1,5 @@
 import {extendObservable, action} from "mobx";
+var _ = require('lodash')
 
 class UserApi {
 	constructor(serverApi) {
@@ -56,6 +57,13 @@ class UserCoursesApi {
 	
 	hostedCourses() {
 		return this.userApi.hostedCourses(this.user.id);
+	}
+	
+	isHost(course){
+		var self = this;
+		return _.some(course.hosts, function(host){
+			return host.id === self.user.id;
+		})
 	}
 	
 	

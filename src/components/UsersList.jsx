@@ -13,14 +13,14 @@ const UserList = observer(React.createClass({
     renderRow: function(row, index) {
 	
 	
-		let dataSource = this.props.dataSource[index];
+		let attendee = this.props.manager.courseAttendees[index];
 		return (
             <Ons.ListItem key={index} onClick={this.props.handleOnClick.bind(this.props.parent, index)} tappable>
                 <div className='center'>
-                    {dataSource.name + " " + dataSource.surname}
+                    {attendee.name}
                 </div>
                 <div className='left'>
-                    {dataSource.isPresent ? <Ons.Icon icon='ion-checkmark, material:md-check' /> : <div></div>}
+                    {this.props.manager.isAttendeeConfirmed(attendee) ? <Ons.Icon icon='ion-checkmark, material:md-check' /> : <div></div>}
                 </div>
             </Ons.ListItem>
         );
@@ -29,7 +29,7 @@ const UserList = observer(React.createClass({
     render: function() {
         return (
             <Ons.List
-                dataSource={this.props.dataSource.map(item => item.name)}
+                dataSource={this.props.manager.courseAttendees.map(item => item.name)}
                 renderRow={this.renderRow}
                 renderHeader={() => <Ons.ListHeader>{"Partecipanti"}</Ons.ListHeader>}
 

@@ -19,6 +19,7 @@ import UserApi from './stores/UserStore'
 import {extendObservable, action, autorun, toJS} from 'mobx';
 
 
+var _ = require('lodash')
 let serverApi = new ServerApi();
 
 class CourseDetailManager {
@@ -37,11 +38,11 @@ class CourseDetailManager {
 					description: this.course.description,
 					time: this.course.startHour + " - " + this.course.endHour,
 					room: this.course.room,
-					host: (this.course.hosts != null) ? this.course.hosts.map(function (host) {
-						return host.name + " " + host.surname
+					host: (this.course.hosts != null && this.course.hosts.slice().length !== 0) ? this.course.hosts.map(function (host) {
+						return host.name
 					}).reduce(function (a, b) {
 						return a + ", " + b;
-					}, "") : []
+					}) : []
 				}
 			},
 
@@ -51,10 +52,19 @@ class CourseDetailManager {
 			},
 
 			checkAttendee: action(function(index){
-				let attendee = this.course.hosts[index];
-				attendee.isPresent = true;
+				let attendee = this.course.attendees[index];
 				api.checkAttendee(this.course.id, attendee.id)
 			}),
+			
+			isAttendeeConfirmed(attendee){
+				return _.some(this.course.confirmedAttendees, function(cattendee){
+					return cattendee.id === attendee.id
+				});
+			},
+			
+			get isHost(){
+				return api.isHost(this.course)
+			},
 			get title(){
 				return this.course.name;
 			},

@@ -33,12 +33,14 @@ var CourseDetailPage = observer(React.createClass({
 	handleUserCheck: function(index){
 		var manager = this.props.manager;
         let courseAttendee = manager.courseAttendees[index];
-        ons.notification.confirm({message: "Confermi che l'utente " + courseAttendee.name + " " + courseAttendee.surname + " è presente?", title: "Conferma presenza"})
-            .then((response) => {
-                if (response === 1) {
-                    manager.checkAttendee(index)
-                }
-            });
+        if(manager.isHost){
+			ons.notification.confirm({message: "Confermi che l'utente " + courseAttendee.name + " " + courseAttendee.surname + " è presente?", title: "Conferma presenza"})
+				.then((response) => {
+					if (response === 1) {
+						manager.checkAttendee(index)
+					}
+				});
+		}
 	},
 	
 	renderToolbar: function (manager) {
@@ -65,7 +67,7 @@ var CourseDetailPage = observer(React.createClass({
 			<Ons.Page renderToolbar={this.renderToolbar.bind(this, manager)}
 					  renderBottomToolbar={this.renderBottomToolbar.bind(this, manager)}>
 				<CourseDetail course={manager.courseToDisplay}></CourseDetail>
-				<UsersList parent={this} dataSource={manager.courseAttendees} handleOnClick={this.handleUserCheck}></UsersList>
+				<UsersList parent={this} manager={manager} handleOnClick={this.handleUserCheck}></UsersList>
 			
 			</Ons.Page>
 		);

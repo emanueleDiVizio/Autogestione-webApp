@@ -52,7 +52,13 @@ class UserApi {
 	}
 
 	checkAttendee(courseId, userId){
-		console.log(courseId + userId)
+		return(fetch(this.url + "/confirmAttendee", {
+			method: 'post',
+			body: JSON.stringify({
+				userId: userId,
+				courseId: courseId
+			})
+		})).then(extractCoursesFromResponse)
 	}
 	coursesToJoin(userId){
 		return(fetch(this.url + "/availableCoursesToJoin", {
