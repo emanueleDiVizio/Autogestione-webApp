@@ -1,6 +1,6 @@
 class ServerApi {
     constructor(){
-    	var isProduction = true;
+    	var isProduction = false;
         this.url = isProduction ? 'https://autogestione-server.herokuapp.com/' : 'http://localhost:1337/';
 
     }
@@ -21,9 +21,8 @@ class UserApi {
 		return(fetch(this.url + '/signup', {
 			method: 'post',
             body: JSON.stringify({
-				name: user.name,
-				surname: user.surname,
-				year: "",
+				name: user.name + " " + user.surname,
+				year: user.year,
 				section: "",
 				building: "",
 				email: user.email,

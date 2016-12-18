@@ -16,6 +16,7 @@ class UserApi {
 	signupUser(user) {
 		var scope = this;
 		return this.serverApi.userApi().signUpUser(user).then(function (json) {
+			console.log(json.user)
 			scope.currentUser = json.user;
 			return json;
 		});
