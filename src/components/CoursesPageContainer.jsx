@@ -24,7 +24,7 @@ const CoursesPageContainer = observer(React.createClass({
 
     render: function() {
         return (
-            <CoursePage parent={this} type={this.props.type} data={this.props.manager.data} handleOnClick={this.handleOnClick} handleOnBack={this.handleOnBack}></CoursePage>
+            <CoursePage loading={this.props.manager.isLoading} parent={this} type={this.props.type} data={this.props.manager.data} handleOnClick={this.handleOnClick} handleOnBack={this.handleOnBack}></CoursePage>
         );
     }
 }));

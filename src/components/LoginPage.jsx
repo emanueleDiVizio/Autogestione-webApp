@@ -50,7 +50,8 @@ var LoginPage = observer(React.createClass({
         var navigator = this.props.navigator;
         var manager = this.props.manager;
         return (
-            <Ons.Page renderToolbar={this.renderToolbar} renderBottomToolbar={this.renderBottomToolbar}>
+            <Ons.Page renderToolbar={this.renderToolbar} renderBottomToolbar={this.renderBottomToolbar}
+					  >
                 <Ons.Row verticalAlign="center"><Ons.Col>
                     <section style={{transform: 'translateY(150%)', textAlign: 'center'}}>
                         <p>
@@ -72,6 +73,11 @@ var LoginPage = observer(React.createClass({
                             <Ons.Button modifier='quiet' onClick={this.handleSignIn.bind(this, navigator, manager)} style={{marginRight: '4px'}}>Accedi</Ons.Button>
                             <Ons.Button modifier='quiet' onClick={this.handleSignUp.bind(this, navigator)} style={{marginLeft: '4px'}}>Registrati</Ons.Button>
                         </p>
+						<p>
+							{manager.isLoading ? <Ons.ProgressCircular indeterminate/>
+								: <div></div>
+							}
+						</p>
                     </section></Ons.Col></Ons.Row>
 
             </Ons.Page>

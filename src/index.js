@@ -91,6 +91,8 @@ class CoursesListManager {
         this.HOSTED = 2;
 		extendObservable(this, {
 			data: [],
+			
+			isLoading:  true,
 
 			type: this.AVAILABLE,
 
@@ -115,24 +117,28 @@ class CoursesListManager {
 
 			setCoursesToDisplay: action(function(type){
                 var parent = this;
+                this.isLoading = true;
 					switch(type){
                         case this.AVAILABLE:
                             userCoursesApi.coursesToJoin().then(function(courses){
                                 console.log(courses)
                                 parent.data = courses;
+                                parent.isLoading = false;
                             })
                             break;
                         case this.JOINED:
                             userCoursesApi.joinedCourses().then(function(courses){
                                 console.log(courses)
                                 parent.data = courses;
-                            })
+								parent.isLoading = false;
+							})
                             break;
                         case this.HOSTED:
                             userCoursesApi.hostedCourses().then(function(courses){
                                 console.log(courses)
                                 parent.data = courses;
-                            })
+								parent.isLoading = false;
+							})
                             break;
                     }
 			}
@@ -172,10 +178,18 @@ class SignUpManager {
 				password: "",
 				building: "Centrale"
 			},
-
+			
+			isLoading: false,
+			
+			
 			signup: action(function (cb) {
+				this.isLoading = true;
+				var self = this;
 				userApi.signupUser(this.user).then(function (json) {
+					self.isLoading = false;
 					cb(json)
+				}).catch(function(err){
+					self.isLoading = false;
 				});
 			})
 		})
@@ -190,6 +204,8 @@ class LoginManager {
 				email: "",
 				password: ""
 			},
+			
+			isLoading: false,
 
 			setUserName: action(function (name) {
 				this.user.email = name;
@@ -200,8 +216,13 @@ class LoginManager {
 			}),
 
 			login: action(function (cb) {
+				this.isLoading = true;
+				var self = this;
 				userApi.signInUser(this.user).then(function (json) {
-					cb(json);
+					self.isLoading = false;
+					cb(json)
+				}).catch(function(err){
+					self.isLoading = false;
 				});
 			})
 		})
@@ -271,11 +292,11 @@ class AppState {
 		var lastPage = this.lastPage;
 		if (lastPage.name === 'main') {
 			var loginManager = new LoginManager(this.userApi)
-			return (<LoginPage key={route.title} navigator={nav} manager={loginManager}></LoginPage>)
+			return (<LoginPage key={route.title} isLoading={loginManager.isLoading} navigator={nav} manager={loginManager}></LoginPage>)
 		}
 		else if (lastPage.name === 'signUp') {
 			var signupManager = new SignUpManager(this.userApi)
-			return (<SignUpPage key={route.title} navigator={nav} manager={signupManager}></SignUpPage>)
+			return (<SignUpPage key={route.title} isLoading={signupManager.isLoading} navigator={nav} manager={signupManager}></SignUpPage>)
 
 		}
 		else if (lastPage.name === 'courses') {
