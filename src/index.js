@@ -219,6 +219,7 @@ class LoginManager {
 				this.isLoading = true;
 				var self = this;
 				userApi.signInUser(this.user).then(function (json) {
+					console.log("promise: json" +  json)
 					self.isLoading = false;
 					cb(json)
 				}).catch(function(err){

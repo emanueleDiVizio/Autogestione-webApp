@@ -33,10 +33,8 @@ class UserApi {
 	}
 
 	signInUser(user){
-		console.log(user)
 		return(fetch(this.url + '/login', {
 			method: 'post',
-			mode: 'no-cors',
 			body: JSON.stringify({
 				email: user.email,
 				password:user.password
@@ -103,6 +101,7 @@ class UserApi {
 
 
 var responseToJson = function(response){
+	console.log(response)
 	return response.json();
 };
 

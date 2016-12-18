@@ -9,6 +9,7 @@ class UserApi {
 	signInUser(user) {
 		var scope = this;
 		return this.serverApi.userApi().signInUser(user).then(function (json) {
+			console.log("signin: " + json.toString())
 			scope.currentUser = json.user;
 			return json;
 		})
@@ -17,14 +18,14 @@ class UserApi {
 	signupUser(user) {
 		var scope = this;
 		return this.serverApi.userApi().signUpUser(user).then(function (json) {
-			console.log(json.user)
+			console.log(json)
 			scope.currentUser = json.user;
 			return json;
 		});
 	}
 	
 	userCoursesApi(){
-		return new UserCoursesApi(this.serverApi, this.currentUser, {coursesToJoin: [], joinedCourses: [], hostedCourses:[]})
+		return new UserCoursesApi(this.serverApi, this.currentUser, {coursesToJoin: [], joinedCourses: [], hostedCourses:[], areJoinedCached: false, areHostedCached: false, areToJoinCached: false})
 	}
 }
 
@@ -43,12 +44,15 @@ class UserCoursesApi {
 	coursesToJoin() {
 		var self = this;
 		return Promise.resolve(this.coursesCache.coursesToJoin).then(function(courses){
-			console.log("CACHE: " + courses)
-			if(courses.length === 0){
+			console.log("CACHE: " + self.coursesCache.areToJoinCached)
+			if(!self.coursesCache.areToJoinCached){
 				return self.userApi.coursesToJoin(self.user.id).then(function(courses){
 					self.coursesCache.coursesToJoin = courses;
+					self.coursesCache.areToJoinCached = true;
 					return Promise.resolve(self.coursesCache.coursesToJoin)
 				})
+			}else{
+				return courses;
 			}
 		})
 	}
@@ -64,12 +68,16 @@ class UserCoursesApi {
 	joinedCourses() {
 		var self = this;
 		return Promise.resolve(this.coursesCache.joinedCourses).then(function(courses){
-			console.log("CACHE: " + courses)
-			if(courses.length === 0){
+			console.log("CACHE: " + self.coursesCache.areJoinedCached)
+			if(!self.coursesCache.areJoinedCached){
 				return self.userApi.joinedCourses(self.user.id).then(function(courses){
 					self.coursesCache.joinedCourses = courses;
+					self.coursesCache.areJoinedCached = true;
+					
 					return Promise.resolve(self.coursesCache.joinedCourses)
 				})
+			}else{
+				return courses;
 			}
 		})
 	}
@@ -77,12 +85,16 @@ class UserCoursesApi {
 	hostedCourses() {
 		var self = this;
 		return Promise.resolve(this.coursesCache.hostedCourses).then(function(courses){
-			console.log("CACHE: " + courses)
-			if(courses.length === 0){
+			console.log("CACHE: " + self.coursesCache.areHostedCached)
+			if(!self.coursesCache.areHostedCached){
 				return self.userApi.hostedCourses(self.user.id).then(function(courses){
 					self.coursesCache.hostedCourses = courses;
+					self.coursesCache.areHostedCached = true;
+					
 					return Promise.resolve(self.coursesCache.hostedCourses)
 				})
+			}else{
+				return courses;
 			}
 		})
 	}
