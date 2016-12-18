@@ -59,7 +59,7 @@ var LoginPage = observer(React.createClass({
                                 onChange={this.handleUsernameChange.bind(this, manager)}
                                 modifier='underbar'
                                 float
-                                placeholder='Nome utente' />
+                                placeholder='Indirizzo email' />
                         </p>
                         <p>
                             <Ons.Input
