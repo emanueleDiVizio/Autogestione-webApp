@@ -24,6 +24,7 @@ var LoginPage = observer(React.createClass({
 
     handleSignIn: function(navigator, manager) {
         manager.login(function(res){
+        	console.log(res)
             if(res.success){
                 navigator.login(res.user.id)
             }else{

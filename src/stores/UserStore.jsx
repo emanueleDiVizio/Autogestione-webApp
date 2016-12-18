@@ -24,15 +24,16 @@ class UserApi {
 	}
 	
 	userCoursesApi(){
-		return new UserCoursesApi(this.serverApi, this.currentUser)
+		return new UserCoursesApi(this.serverApi, this.currentUser, {coursesToJoin: [], joinedCourses: [], hostedCourses:[]})
 	}
 }
 
 
 class UserCoursesApi {
-	constructor(serverApi, user) {
+	constructor(serverApi, user, coursesCache) {
 		this.user = user;
 		this.userApi = serverApi.userApi();
+		this.coursesCache = coursesCache;
 	}
 	
 	joinCourse(id) {
@@ -40,7 +41,16 @@ class UserCoursesApi {
 	}
 	
 	coursesToJoin() {
-		return this.userApi.coursesToJoin(this.user.id);
+		var self = this;
+		return Promise.resolve(this.coursesCache.coursesToJoin).then(function(courses){
+			console.log("CACHE: " + courses)
+			if(courses.length === 0){
+				return self.userApi.coursesToJoin(self.user.id).then(function(courses){
+					self.coursesCache.coursesToJoin = courses;
+					return Promise.resolve(self.coursesCache.coursesToJoin)
+				})
+			}
+		})
 	}
 	
 	checkAttendee(courseId, userId){
@@ -52,11 +62,29 @@ class UserCoursesApi {
 	}
 	
 	joinedCourses() {
-		return this.userApi.joinedCourses(this.user.id);
+		var self = this;
+		return Promise.resolve(this.coursesCache.joinedCourses).then(function(courses){
+			console.log("CACHE: " + courses)
+			if(courses.length === 0){
+				return self.userApi.joinedCourses(self.user.id).then(function(courses){
+					self.coursesCache.joinedCourses = courses;
+					return Promise.resolve(self.coursesCache.joinedCourses)
+				})
+			}
+		})
 	}
 	
 	hostedCourses() {
-		return this.userApi.hostedCourses(this.user.id);
+		var self = this;
+		return Promise.resolve(this.coursesCache.hostedCourses).then(function(courses){
+			console.log("CACHE: " + courses)
+			if(courses.length === 0){
+				return self.userApi.hostedCourses(self.user.id).then(function(courses){
+					self.coursesCache.hostedCourses = courses;
+					return Promise.resolve(self.coursesCache.hostedCourses)
+				})
+			}
+		})
 	}
 	
 	isHost(course){

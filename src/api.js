@@ -20,7 +20,8 @@ class UserApi {
 	signUpUser(user){
 		return(fetch(this.url + '/signup', {
 			method: 'post',
-            body: JSON.stringify({
+			mode: 'no-cors',
+			body: JSON.stringify({
 				name: user.name + " " + user.surname,
 				year: user.year,
 				section: "",
@@ -35,7 +36,8 @@ class UserApi {
 		console.log(user)
 		return(fetch(this.url + '/login', {
 			method: 'post',
-            body: JSON.stringify({
+			mode: 'no-cors',
+			body: JSON.stringify({
 				email: user.email,
 				password:user.password
 			})
@@ -44,6 +46,7 @@ class UserApi {
 	joinCourse(courseId, userId){
 		return fetch(this.url + "/joinCourse", {
             method: 'post',
+			mode: 'no-cors',
 			body: JSON.stringify({
 				courseId: courseId,
 				userId: userId
@@ -54,6 +57,7 @@ class UserApi {
 	checkAttendee(courseId, userId){
 		return(fetch(this.url + "/confirmAttendee", {
 			method: 'post',
+			mode: 'no-cors',
 			body: JSON.stringify({
 				userId: userId,
 				courseId: courseId
