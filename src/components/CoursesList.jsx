@@ -12,11 +12,31 @@ var Ons = require('react-onsenui');
 const CoursesList = observer(React.createClass({
     renderRow: function(row, index) {
 
+        function getHour(hour){
+            let finalHour;
+            let hourLeft = hour.split(":")[0];
+            let hourRight = hour.split(":")[1];
+            if(hourLeft.length === 1){
+                return "0" + hourLeft + ":" + hourRight;
+            }else{
+                return hour;
+            }
+        }
+
+
+        let course = this.props.dataSource[index];
 
         return (
             <Ons.ListItem key={index} onClick={this.props.handleOnClick.bind(this.props.parent, index)} tappable>
+                <div className="left">
+                    {getHour(course.startHour) + " - " + getHour(course.endHour)}
+                </div>
                 <div className='center'>
-                    {this.props.dataSource[index].name}
+
+                    {course.name}
+                </div>
+                <div className="right">
+                    {course.room}
                 </div>
             </Ons.ListItem>
         );
