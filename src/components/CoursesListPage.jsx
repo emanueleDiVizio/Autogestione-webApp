@@ -20,7 +20,7 @@ var CoursesListPage = React.createClass({
         return [
             {
                 content: <CoursesPageContainer manager={this.props.manager.buildListManager(1)} type={1}/>,
-                tab: <Ons.Tab label='Corsi Da Seguire' icon='md-settings' />
+                tab: <Ons.Tab label='Corsi Scelti' icon='md-settings' />
             },
             {
                 content: <CoursesPageContainer manager={this.props.manager.buildListManager(0)} type={0}/>,
@@ -28,7 +28,7 @@ var CoursesListPage = React.createClass({
             },
             {
                 content: <CoursesPageContainer manager={this.props.manager.buildListManager(2)} type={2}/>,
-                tab: <Ons.Tab label='Corsi Da Gestire' icon='md-settings' />
+                tab: <Ons.Tab label='Corsi Da Tenere' icon='md-settings' />
             }
         ];
     },

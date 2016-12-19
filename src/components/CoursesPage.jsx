@@ -17,9 +17,9 @@ var CoursesPage = observer(React.createClass({
 			case 0:
 				return "Corsi Disponibili";
 			case 1:
-				return "Corsi Da Seguire";
+				return "Corsi Scelti";
 			case 2:
-				return "Corsi Da Gestire";
+				return "Corsi Da Tenere";
 		}
 	},
 	
@@ -39,7 +39,7 @@ var CoursesPage = observer(React.createClass({
 		return (
 			<Ons.Page renderToolbar={this.renderToolbar}>
 				{this.props.loading ? <div style={{transform: 'translateY(150%)', textAlign: 'center'}}><Ons.ProgressCircular indeterminate/></div>
-					: <CoursesList parent={this.props.parent} dataSource={data} title="Corsi"
+					: <CoursesList parent={this.props.parent} dataSource={data} title="Corsi di oggi"
 								   handleOnClick={this.props.handleOnClick}></CoursesList>
 				}
 			</Ons.Page>
