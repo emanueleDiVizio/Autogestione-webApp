@@ -28,10 +28,10 @@ const CoursesList = observer(React.createClass({
 
         return (
             <Ons.ListItem key={index} onClick={this.props.handleOnClick.bind(this.props.parent, index)} tappable>
-                <div className="left">
+                <div className="left" style={{marginRight: "16px"}}>
                     {getHour(course.startHour) + " - " + getHour(course.endHour)}
                 </div>
-                <div className='center'>
+                <div className='center' style={{marginLeft: "16px"}}>
 
                     {course.name}
                 </div>
