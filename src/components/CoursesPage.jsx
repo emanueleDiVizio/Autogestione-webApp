@@ -39,7 +39,7 @@ var CoursesPage = observer(React.createClass({
 		return (
 			<Ons.Page renderToolbar={this.renderToolbar}>
 				{this.props.loading ? <div style={{transform: 'translateY(150%)', textAlign: 'center'}}><Ons.ProgressCircular indeterminate/></div>
-					: <CoursesList parent={this.props.parent} dataSource={data} title="Corsi del 20/12/2016"
+					: <CoursesList parent={this.props.parent} dataSource={data} title="Corsi del 21/12/2016"
 								   handleOnClick={this.props.handleOnClick}></CoursesList>
 				}
 			</Ons.Page>
